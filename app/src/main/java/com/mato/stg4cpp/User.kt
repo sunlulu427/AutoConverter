@@ -18,7 +18,16 @@ class User {
     val tags: List<Tag> = emptyList()
 
     @STGField
-    val introduction: String = ""
+    val online: Boolean = false
+
+    @STGField
+    val id: Long = 0L
+
+    @STGField
+    val weight: Float = 0.0f
+
+    @STGField
+    var money: Double? = 0.0
 
     @STGClass
     class Videos(

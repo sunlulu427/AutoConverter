@@ -5,6 +5,7 @@ import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.KSAnnotated
+import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.mato.stg4.annotation.STGClass
 
 class STGProcessor(
@@ -16,12 +17,14 @@ class STGProcessor(
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
         warn("$TAG begin to process")
-        resolver.getAllFiles().forEach {
-            warn("$TAG-processor# find file: ${it.fileName}")
-        }
-        resolver.getSymbolsWithAnnotation(STGClass::class.java.name).forEach {
-            warn("$TAG find STGClass:")
-        }
+        resolver.getSymbolsWithAnnotation(STGClass::class.java.name)
+            .map { it as KSClassDeclaration }
+            .forEach {
+                val properties = it.getAllProperties()
+                for (prop in properties) {
+                    warn(prop.info())
+                }
+            }
         return emptyList()
     }
 

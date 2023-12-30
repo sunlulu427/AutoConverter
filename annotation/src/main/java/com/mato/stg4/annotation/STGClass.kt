@@ -6,4 +6,4 @@ package com.mato.stg4.annotation
  */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
-annotation class STGClass()
+annotation class STGClass(val path: String = "")
