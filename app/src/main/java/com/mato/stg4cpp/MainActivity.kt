@@ -17,6 +17,8 @@ class MainActivity : AppCompatActivity() {
 
         // Example of a call to a native method
         binding.sampleText.text = stringFromJNI()
+
+        val rest = Restaurant().toJSONObject()
     }
 
     /**

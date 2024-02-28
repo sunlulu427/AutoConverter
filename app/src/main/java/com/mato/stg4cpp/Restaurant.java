@@ -1,6 +1,7 @@
 package com.mato.stg4cpp;
 
 
+import com.mato.stg4.annotation.FormatJson;
 import com.mato.stg4.annotation.STGClass;
 import com.mato.stg4.annotation.STGField;
 
@@ -13,7 +14,7 @@ import java.util.List;
  * @Author sunlulu.tomato
  * @Date 2023/12/31
  */
-@STGClass
+@FormatJson
 public class Restaurant {
 
     @STGField
@@ -25,26 +26,26 @@ public class Restaurant {
     @STGField
     public int comments = 0;
 
-    @STGField
-    public Menu menu;
+//    @STGField
+//    public Menu menu;
 
     @STGField
     public Integer staffs = 0;
 
-    @STGClass
-    public static class Menu {
-        @STGField
-        public ArrayList<Food> foods = new ArrayList<>();
-
-        @STGField
-        public int level = 1;
-    }
-
-    @STGClass
-    public static class Food {
-        @STGField
-        public String name;
-        @STGField
-        public float price;
-    }
+//    @STGClass
+//    public static class Menu {
+//        @STGField
+//        public ArrayList<Food> foods = new ArrayList<>();
+//
+//        @STGField
+//        public int level = 1;
+//    }
+//
+//    @STGClass
+//    public static class Food {
+//        @STGField
+//        public String name;
+//        @STGField
+//        public float price;
+//    }
 }
