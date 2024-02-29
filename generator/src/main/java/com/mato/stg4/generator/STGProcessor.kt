@@ -7,26 +7,21 @@ import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.google.devtools.ksp.symbol.KSPropertyDeclaration
-import com.mato.stg4.annotation.FormatJson
+import com.mato.stg4.annotation.AutoConvert
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.asClassName
+import org.json.JSONObject
 
 class STGProcessor(
     private val environment: SymbolProcessorEnvironment
 ) : SymbolProcessor, KSPLogger by environment.logger {
-    companion object {
-        private const val TAG = "STGProcessor"
-        private val kotlinResult = ClassName("kotlin", "Result")
-        private val jsonObjectClassName = ClassName("org.json", "JSONObject")
-
-    }
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        warn("$TAG begin to process")
-        val symbols = resolver.getSymbolsWithAnnotation(FormatJson::class.java.name)
+        warn("Begin to process")
+        val symbols = resolver.getSymbolsWithAnnotation(AutoConvert::class.java.name)
         symbols.filterIsInstance<KSClassDeclaration>()
             .forEach(this::generatorFuncForClass)
         return emptyList()
@@ -34,24 +29,31 @@ class STGProcessor(
 
     private fun generatorFuncForClass(ksClass: KSClassDeclaration) {
         warn("Try get ksClass.annotations.")
-        ksClass.annotations.filter { it.match<FormatJson>() }
-            .forEach {
-                warn("matched: $it")
-                val formatJson = it.build<FormatJson>()
-                warn(formatJson.toString())
-            }
         val className = ksClass.simpleName.asString()
-        val file = FileSpec.builder(ksClass.packageName.asString(), "${className}Ext")
-        val receiverType = ClassName(ksClass.packageName.asString(), ksClass.simpleName.asString())
+        val packageName = ksClass.packageName.asString()
+        ksClass.annotations.filterIsInstance<AutoConvert>()
+            .map {
+                warn("find auto converter: $it")
+            }
+        val file = FileSpec.builder(packageName, "${className}Ext")
+            .indent(" ".repeat(4))
+        val receiverType = ClassName(packageName, className)
         val funBuilder = FunSpec.builder("toJSONObject")
             .receiver(receiverType)
-            .returns(kotlinResult.parameterizedBy(jsonObjectClassName))
-        funBuilder.addStatement("val json = %T()", jsonObjectClassName)
+            .returns(Result::class.asClassName().parameterizedBy(JSONObject::class.asClassName()))
+
+        // begin control flow
+        funBuilder.beginControlFlow("return kotlin.runCatching {")
+
+        funBuilder.addStatement("val json = %T()", JSONObject::class.asClassName())
         ksClass.getAllProperties().forEach {
             val propName = it.simpleName.asString()
             funBuilder.addStatement("json.put(%S, this.%L)", propName, propName)
         }
-        funBuilder.addStatement("return Result.success(json)")
+        funBuilder.addStatement("json")
+
+        // end control flow
+        funBuilder.endControlFlow()
         file.addFunction(funBuilder.build())
         val output = environment.codeGenerator.createNewFile(
             dependencies = Dependencies(false),
@@ -62,20 +64,5 @@ class STGProcessor(
         val code = file.build().toString().toByteArray()
         output.write(code)
         output.close()
-    }
-
-    private fun KSPropertyDeclaration.toJsonElement(): Any {
-        return 0
-    }
-
-
-    override fun onError() {
-        super.onError()
-        error("$TAG error")
-    }
-
-    override fun finish() {
-        super.finish()
-        warn("$TAG finish")
     }
 }
