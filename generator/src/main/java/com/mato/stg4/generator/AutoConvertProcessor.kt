@@ -1,5 +1,7 @@
 package com.mato.stg4.generator
 
+import com.google.devtools.ksp.KspExperimental
+import com.google.devtools.ksp.getAnnotationsByType
 import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
@@ -15,26 +17,30 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.asClassName
 import org.json.JSONObject
 
-class STGProcessor(
+@OptIn(KspExperimental::class)
+class AutoConvertProcessor(
     private val environment: SymbolProcessorEnvironment
 ) : SymbolProcessor, KSPLogger by environment.logger {
 
+    private var invoked = false
+
     override fun process(resolver: Resolver): List<KSAnnotated> {
+        if (invoked) {
+            warn("processed, skip.")
+        }
         warn("Begin to process")
         val symbols = resolver.getSymbolsWithAnnotation(AutoConvert::class.java.name)
         symbols.filterIsInstance<KSClassDeclaration>()
             .forEach(this::generatorFuncForClass)
+        invoked = true
         return emptyList()
     }
 
     private fun generatorFuncForClass(ksClass: KSClassDeclaration) {
-        warn("Try get ksClass.annotations.")
+        val autoConvert = ksClass.getAnnotationsByType(AutoConvert::class).first()
+        warn("get annotation: $autoConvert")
         val className = ksClass.simpleName.asString()
         val packageName = ksClass.packageName.asString()
-        ksClass.annotations.filterIsInstance<AutoConvert>()
-            .map {
-                warn("find auto converter: $it")
-            }
         val file = FileSpec.builder(packageName, "${className}Ext")
             .indent(" ".repeat(4))
         val receiverType = ClassName(packageName, className)
@@ -48,6 +54,9 @@ class STGProcessor(
         funBuilder.addStatement("val json = %T()", JSONObject::class.asClassName())
         ksClass.getAllProperties().forEach {
             val propName = it.simpleName.asString()
+            warn("property: ${it.info()}")
+            warn("resolved type: ${it.type.resolve()}")
+            warn("\n")
             funBuilder.addStatement("json.put(%S, this.%L)", propName, propName)
         }
         funBuilder.addStatement("json")

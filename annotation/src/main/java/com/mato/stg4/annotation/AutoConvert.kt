@@ -11,6 +11,7 @@ package com.mato.stg4.annotation
  * @property filePostfix
  * @constructor Create empty Auto convert
  */
+@MustBeDocumented
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.BINARY)
 annotation class AutoConvert(

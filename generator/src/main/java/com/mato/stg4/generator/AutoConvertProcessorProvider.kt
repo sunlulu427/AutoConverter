@@ -4,7 +4,7 @@ import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.processing.SymbolProcessorProvider
 
-class STGProcessorProvider : SymbolProcessorProvider {
+class AutoConvertProcessorProvider : SymbolProcessorProvider {
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
         environment.logger.run {
             info("Kotlin version: ${environment.kotlinVersion}")
@@ -12,6 +12,6 @@ class STGProcessorProvider : SymbolProcessorProvider {
             info("Compile Version: ${environment.compilerVersion}")
             info("Options: ${environment.options}")
         }
-        return STGProcessor(environment)
+        return AutoConvertProcessor(environment)
     }
 }
