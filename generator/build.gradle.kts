@@ -5,7 +5,7 @@ plugins {
 dependencies {
     implementation(project(":annotation"))
     // KSP
-    implementation("com.google.devtools.ksp:symbol-processing-api:1.9.0-1.0.13") {
+    implementation("com.google.devtools.ksp:symbol-processing-api:1.7.21-1.0.8") {
         exclude(module = "kotlin-reflect")
     }
     // kotlin poet
