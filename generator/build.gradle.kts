@@ -12,4 +12,10 @@ dependencies {
     implementation("com.squareup:kotlinpoet:1.12.0")
     implementation("com.squareup:kotlinpoet-ksp:1.12.0")
     implementation("org.json:json:20230227")
+    testImplementation("org.jetbrains.kotlin:kotlin-test")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.8.2")
+}
+
+tasks.test {
+    useJUnitPlatform()
 }

@@ -26,9 +26,8 @@ class AutoConvertProcessor(
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
         if (invoked) {
-            warn("processed, skip.")
+            return emptyList()
         }
-        warn("Begin to process")
         val symbols = resolver.getSymbolsWithAnnotation(AutoConvert::class.java.name)
         symbols.filterIsInstance<KSClassDeclaration>()
             .forEach(this::generatorFuncForClass)
@@ -54,9 +53,6 @@ class AutoConvertProcessor(
         funBuilder.addStatement("val json = %T()", JSONObject::class.asClassName())
         ksClass.getAllProperties().forEach {
             val propName = it.simpleName.asString()
-            warn("property: ${it.info()}")
-            warn("resolved type: ${it.type.resolve()}")
-            warn("\n")
             funBuilder.addStatement("json.put(%S, this.%L)", propName, propName)
         }
         funBuilder.addStatement("json")
