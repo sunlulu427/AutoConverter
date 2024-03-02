@@ -1,6 +1,8 @@
 package com.mato.stg4cpp
 
 import com.mato.stg4.annotation.AutoConvert
+import com.mato.stg4cpp.pkg2.Gender
+import com.mato.stg4cpp.pkg2.Location
 
 /**
  * @Author sunlulu.tomato
@@ -8,12 +10,12 @@ import com.mato.stg4.annotation.AutoConvert
  */
 @AutoConvert
 data class Restaurant(
-    val boss: Boss,
-    val location: String = "",
     val score: Float = 0.0f,
     val comments: Int = 0,
-    val staffs: Int = 0,
-    val foods: List<String> = emptyList()
+    val boss: Boss,
+    val location: Location = Location(),
+    val foods: List<String> = emptyList(),
+    val gender: Gender = Gender()
 )
 
 

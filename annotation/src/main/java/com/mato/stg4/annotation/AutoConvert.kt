@@ -1,22 +1,18 @@
 package com.mato.stg4.annotation
 
 /**
- * Auto convert
+ * Auto convert annotation
 
- * @date: 2024-02-29
- * @author: 孙路路 sunlulu.tomato
- * @property functions
- * @property namingStrategy
- * @property skipNulls
- * @property filePostfix
+ * @property functions enabled auto convert functions, toJSONObject by default
+ * @property namingStrategy naming strategy, None by default
+ * @property filePostfix file postfix, Ext by default, filename is ClassName + filePostfix
  * @constructor Create empty Auto convert
  */
 @MustBeDocumented
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.BINARY)
 annotation class AutoConvert(
-    val functions: Array<STGFunction> = [],
+    val functions: Array<ACFunction> = [ACFunction.ToJSONObject],
     val namingStrategy: NamingStrategy = NamingStrategy.None,
-    val skipNulls: Boolean = true,
     val filePostfix: String = "Ext"
 )
