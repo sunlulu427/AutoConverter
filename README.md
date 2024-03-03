@@ -10,6 +10,7 @@ I planned two versions, one is the **ksp** version, and the other is **kcp and I
 - [x] nested classes
 - [x] naming strategy for properties, e.g. camel to underline
 - [x] code style config, e.g. indent
+- [x] fields marked nullable
 - [ ] conversion between JSONArray and List
 - [ ] conversion between JSONObject and Map
 - [ ] deserialization: fromJSONObject
@@ -55,7 +56,7 @@ data class Restaurant(
     val score: Float = 0.0f,
     val comments: Int = 0,
     val boss: Boss,
-    val location: Location = Location(),
+    val location: Location? = null,
     val foods: List<String> = emptyList(),
     val gender: Gender = Gender()
 )
@@ -128,7 +129,7 @@ public fun Restaurant.toJSONObject(): Result<JSONObject> = kotlin.runCatching {
         it.put("score", this.score)
         it.put("comments", this.comments)
         it.put("boss", this.boss.toJSONObject().getOrThrow())
-        it.put("location", this.location.toJSONObject().getOrThrow())
+        it.put("location", this.location?.toJSONObject()?.getOrThrow())
         it.put("foods", this.foods)
         it.put("gender", this.gender.toJSONObject().getOrThrow())
     }

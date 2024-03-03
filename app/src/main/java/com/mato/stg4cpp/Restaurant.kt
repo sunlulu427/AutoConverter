@@ -13,7 +13,7 @@ data class Restaurant(
     val score: Float = 0.0f,
     val comments: Int = 0,
     val boss: Boss,
-    val location: Location = Location(),
+    val location: Location? = null,
     val foods: List<String> = emptyList(),
     val gender: Gender = Gender()
 )

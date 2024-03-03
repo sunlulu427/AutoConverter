@@ -83,7 +83,11 @@ class ACGenerator(
                     // enable nested classes
                     val nestedPackageName = it.type.resolve().declaration.packageName.asString()
                     fileBuilder.addImport(nestedPackageName, name)
-                    "this.%L.$name().getOrThrow()"
+                    if (it.type.resolve().isMarkedNullable) {
+                        "this.%L?.$name()?.getOrThrow()"
+                    } else {
+                        "this.%L.$name().getOrThrow()"
+                    }
                 } else {
                     "this.%L"
                 }
