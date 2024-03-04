@@ -15,13 +15,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val rest = Restaurant(
-            boss = Boss(
-                gender = 1,
-                age = 12,
-                name = "Mike"
-            )
-        ).toJSONObject()
+        val rest = Restaurant(1.0f).toJSONObject()
         // Example of a call to a native method
         binding.sampleText.text = rest.toString()
     }

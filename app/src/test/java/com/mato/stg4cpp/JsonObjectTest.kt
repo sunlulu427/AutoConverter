@@ -1,7 +1,7 @@
 package com.mato.stg4cpp
 
-import org.json.JSONArray
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
@@ -13,12 +13,6 @@ class JsonObjectTest {
     @Test
     fun testJsonPut() {
         val restaurant = Restaurant(
-            boss = Boss(
-                gender = 1,
-                age = 12,
-                name = "Mike"
-            ),
-            location = "122",
             score = 4.3f,
             comments = 1000,
             foods = listOf("A", "B", "C")
